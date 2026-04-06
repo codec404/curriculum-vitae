@@ -36,7 +36,7 @@ gsap.registerPlugin(ScrollTrigger);
             <p class="bio-text">
               Outside of work, competitive programming is my sport. I've reached
               <strong class="text-cyan-400">Round 3 of Meta Hacker Cup 2025</strong> (global rank 186),
-              hold a <strong class="text-cyan-400">Knight</strong> badge on LeetCode (2088), and am
+              hold a <strong class="text-cyan-400">Guardian</strong> badge on LeetCode (2140), and am
               a <strong class="text-cyan-400">Specialist</strong> on Codeforces (1583).
             </p>
 
@@ -231,8 +231,8 @@ export class AboutComponent implements AfterViewInit {
       detail: 'Global Rank 48 / 17,000+ participants',
     },
     {
-      title: 'LeetCode Knight',
-      detail: 'Rating 2088',
+      title: 'LeetCode Guardian',
+      detail: 'Rating 2140',
     },
     {
       title: 'Codeforces Specialist',

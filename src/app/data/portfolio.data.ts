@@ -52,7 +52,7 @@ export const CP_PROFILES: CPProfile[] = [
 // These show on the landing screen below the CTA buttons.
 
 export const HERO_STATS = [
-  { value: '2088', label: 'LeetCode Rating' },
+  { value: '2140', label: 'LeetCode Rating' },
   { value: '1583', label: 'Codeforces Rating' },
   { value: 'Top 200', label: 'Meta Hacker Cup' },
   { value: '8.88', label: 'CGPA / 10' },
