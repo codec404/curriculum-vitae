@@ -40,9 +40,9 @@ export const CP_PROFILES: CPProfile[] = [
   {
     platform: 'AtCoder',
     handle: 'Gojo_satoru_091',
-    rating: 1175,
-    rank: 'Green',
-    color: '#008000',
+    rating: 1204,
+    rank: 'Cyan',
+    color: '#00c0c0',
     url: 'https://atcoder.jp/users/Gojo_satoru_091',
     icon: 'AC',
   },
