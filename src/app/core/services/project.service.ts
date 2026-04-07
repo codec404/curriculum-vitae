@@ -1,9 +1,12 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Project, Experience, CPProfile } from '../../shared/models/project.model';
 import { CP_PROFILES } from '../../data/portfolio.data';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class ProjectService {
+  private http = inject(HttpClient);
   readonly projects = signal<Project[]>([
     {
       id: 'konfig',
@@ -68,4 +71,11 @@ export class ProjectService {
   ]);
 
   readonly cpProfiles = signal<CPProfile[]>(CP_PROFILES);
+
+  constructor() {
+    this.http.get<{ cp_profiles: CPProfile[] }>(environment.profileApiUrl).subscribe({
+      next: (data) => this.cpProfiles.set(data.cp_profiles),
+      error: () => { /* fallback to static CP_PROFILES already set */ },
+    });
+  }
 }
