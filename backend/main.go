@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
+	"gopkg.in/yaml.v3"
 )
 
 // ── Config cache ──────────────────────────────────────────────────────────────
@@ -170,8 +171,16 @@ func profileHandler(c *cache, allowedOrigin string) http.HandlerFunc {
 
 		w.Header().Set("Content-Type", "application/json")
 		w.Header().Set("X-Config-Version", fmt.Sprintf("%d", version))
-		// content is already a JSON string stored in Konfig — write it directly
-		fmt.Fprint(w, content)
+
+		// Config may be stored as YAML or JSON — normalise to JSON
+		var parsed interface{}
+		if err := yaml.Unmarshal([]byte(content), &parsed); err != nil {
+			http.Error(w, `{"error":"failed to parse config"}`, http.StatusInternalServerError)
+			return
+		}
+		if err := json.NewEncoder(w).Encode(parsed); err != nil {
+			log.Printf("encode error: %v", err)
+		}
 	}
 }
 

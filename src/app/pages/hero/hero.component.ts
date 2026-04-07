@@ -6,6 +6,7 @@ import {
   ViewChild,
   NgZone,
   inject,
+  computed,
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -13,7 +14,7 @@ import { RouterModule } from '@angular/router';
 import * as THREE from 'three';
 import gsap from 'gsap';
 import { MagneticBtnComponent } from '../../shared/components/magnetic-btn/magnetic-btn.component';
-import { HERO_STATS } from '../../data/portfolio.data';
+import { ProjectService } from '../../core/services/project.service';
 
 @Component({
   selector: 'app-hero',
@@ -69,7 +70,7 @@ import { HERO_STATS } from '../../data/portfolio.data';
 
           <!-- Quick stats -->
           <div #stats class="hero-stats">
-            @for (stat of quickStats; track stat.label) {
+            @for (stat of quickStats(); track stat.label) {
               <div class="stat">
                 <span class="stat-value font-mono text-gradient">{{ stat.value }}</span>
                 <span class="stat-label">{{ stat.label }}</span>
@@ -250,7 +251,18 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
   private zone = inject(NgZone);
   private observer!: IntersectionObserver;
 
-  readonly quickStats = HERO_STATS;
+  private projectService = inject(ProjectService);
+  readonly quickStats = computed(() => {
+    const profiles = this.projectService.cpProfiles();
+    const leetcode = profiles.find(p => p.platform === 'LeetCode');
+    const codeforces = profiles.find(p => p.platform === 'Codeforces');
+    return [
+      { value: leetcode ? String(leetcode.rating) : '—', label: 'LeetCode Rating' },
+      { value: codeforces ? String(codeforces.rating) : '—', label: 'Codeforces Rating' },
+      { value: 'Top 200', label: 'Meta Hacker Cup' },
+      { value: '8.88', label: 'CGPA / 10' },
+    ];
+  });
 
   ngAfterViewInit(): void {
     // Three.js render loop and mouse tracking run outside Angular's zone
