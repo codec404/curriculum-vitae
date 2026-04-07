@@ -1,8 +1,9 @@
-import { Component, AfterViewInit, ChangeDetectionStrategy, ElementRef, inject,
+import { Component, AfterViewInit, ChangeDetectionStrategy, ElementRef, inject, computed,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { ProjectService } from '../../core/services/project.service';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -36,8 +37,8 @@ gsap.registerPlugin(ScrollTrigger);
             <p class="bio-text">
               Outside of work, competitive programming is my sport. I've reached
               <strong class="text-cyan-400">Round 3 of Meta Hacker Cup 2025</strong> (global rank 186),
-              hold a <strong class="text-cyan-400">Guardian</strong> badge on LeetCode (2140), and am
-              a <strong class="text-cyan-400">Specialist</strong> on Codeforces (1583).
+              hold a <strong class="text-cyan-400">{{ leetcode()?.rank ?? 'Guardian' }}</strong> badge on LeetCode ({{ leetcode()?.rating ?? 2140 }}), and am
+              a <strong class="text-cyan-400">{{ codeforces()?.rank ?? 'Specialist' }}</strong> on Codeforces ({{ codeforces()?.rating ?? 1583 }}).
             </p>
 
             <!-- Skills grid -->
@@ -83,7 +84,7 @@ gsap.registerPlugin(ScrollTrigger);
                 </svg>
                 <span class="font-mono text-xs text-text-secondary">Achievements</span>
               </div>
-              @for (ach of achievements; track ach.title) {
+              @for (ach of achievements(); track ach.title) {
                 <div class="ach-item">
                   <span class="ach-dot"></span>
                   <div>
@@ -214,6 +215,11 @@ gsap.registerPlugin(ScrollTrigger);
 })
 export class AboutComponent implements AfterViewInit {
   private el = inject(ElementRef).nativeElement;
+  private projectService = inject(ProjectService);
+
+  readonly leetcode = computed(() => this.projectService.cpProfiles().find(p => p.platform === 'LeetCode'));
+  readonly codeforces = computed(() => this.projectService.cpProfiles().find(p => p.platform === 'Codeforces'));
+
   skillGroups = [
     { category: 'Languages', items: ['C++', 'Go', 'Java', 'Python', 'JavaScript'] },
     { category: 'Backend / Infra', items: ['Node.js', 'gRPC', 'Kafka', 'Redis', 'PostgreSQL', 'MongoDB', 'Docker', 'AWS'] },
@@ -221,7 +227,7 @@ export class AboutComponent implements AfterViewInit {
     { category: 'Observability', items: ['Prometheus', 'Grafana', 'Linux'] },
   ];
 
-  achievements = [
+  readonly achievements = computed(() => [
     {
       title: 'Meta Hacker Cup 2025 — Round 3',
       detail: 'Global Rank 186 · Top 0.01%',
@@ -231,14 +237,14 @@ export class AboutComponent implements AfterViewInit {
       detail: 'Global Rank 48 / 17,000+ participants',
     },
     {
-      title: 'LeetCode Guardian',
-      detail: 'Rating 2140',
+      title: `LeetCode ${this.leetcode()?.rank ?? 'Guardian'}`,
+      detail: `Rating ${this.leetcode()?.rating ?? 2140}`,
     },
     {
-      title: 'Codeforces Specialist',
-      detail: 'Rating 1583',
+      title: `Codeforces ${this.codeforces()?.rank ?? 'Specialist'}`,
+      detail: `Rating ${this.codeforces()?.rating ?? 1583}`,
     },
-  ];
+  ]);
 
   ngAfterViewInit(): void {
     setTimeout(() => {
